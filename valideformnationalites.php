@@ -1,42 +1,28 @@
 <?php include "header.php";
 include "connexionbdd.php";
 $action=$_GET['action'];
-$num=$_POST['num'];
-$libelle=$_POST['libelle'];
+$num=$_POST['num'];//je récupère le libellé dans le formulaire
+$libelle=$_POST['libelle'];//je récupère le libellé dans le formulaire
+$continent=$_POST['continent'];//je récupère le numéro du continent sélectionné dans le formulaire
 
 if($action == "Modifier"){
-$req=$monPdo->prepare("update nationalite set libelle = :libelle where num =:num");
+$req=$monPdo->prepare("update nationalite set libelle = :libelle, numContinent = :continent where num =:num");
 $req->bindParam(':num',$num);
 $req->bindParam(':libelle',$libelle);
+$req->bindParam(':continent',$continent);
 
 }else{ 
-    $req=$monPdo->prepare("insert into nationalite(libelle) values(:libelle)");
+    $req=$monPdo->prepare("insert into nationalite(libelle, numContinent) values(:libelle, :continent)");
     $req->bindParam(':libelle',$libelle);
+    $req->bindParam(':continent',$continent);
 }
 $nb=$req->execute();
-$message= $action == "Modifier" ? "modifiée" : "ajoutée"  ;
+$message = $action == "Modifier" ? "modifiée" : "ajoutée";
 
-echo '<div class="container mt-5">';
-echo'<div class="row">
-    <div class="col mt-3 ">';
-if($nb==1) {
-    echo'<div class="alert alert-success" role="alert">
-    La nationalité a bien été  ' . $message . '</div>';
-}else{
-    echo'<div class="alert alert-warning" role="alert">
-    La nationalité n\'a pas été ' . $message . '</div>';
-    
+if($nb == 1) {
+    $_SESSION['message'] = ["success" => "La nationalité a bien été " . $message];
+} else {
+    $_SESSION['message'] = ["danger" => "La nationalité n'a pas été " . $message];
 }
-?>
-</div>
-</div>
-<a href="listenationalites.php" class="btn btn-primary">Revenir à la liste des nationalités</a>
- 
-    
-</div>
-
-
-
-<?php include "footer.php";
-
-?>
+header('Location: listenationalites.php');
+exit();
