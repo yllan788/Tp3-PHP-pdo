@@ -1,22 +1,30 @@
 
 ?><?php include "header.php";
 include "connexionbdd.php";
-$texteReq="select n.num, n.libelle as 'libNation', c.libelle as 'libContinent' from nationalite n, continent c where n.numContinent=c.num order by n.libelle";
-$req = $monPdo->prepare();
+$texteReq="select n.num, n.libelle as 'libNation', c.libelle as 'libContinent' from nationalite n, continent c where n.numContinent=c.num";
+if(!empty($_GET)){
+    if($_GET['libelle']!=""){$texteReq.= " and n.libelle like '%" .$_GET['libelle']."%'";}
+    if($_GET['continent']!="Tous"){$texteReq.= " and c.num =" .$_GET['continent'];}
+}
+    $req=$monPdo->prepare($texteReq);
+    $req->execute();
+    
 $libelle = $_GET['libelle'] ?? '';
 $numContinent = $_GET['continent'] ?? '';
+$texteReq.=" order by n.libelle";
 
-$req = $monPdo->prepare("select n.num, n.libelle as 'libNation', c.libelle as 'libContinent' from nationalite n, continent c where n.numContinent=c.num and (n.libelle like :libelle or :libelle2 = '') and (c.num = :continent or :continent2 = '') order by n.libelle");
-$req->bindValue(':libelle', '%' . $libelle . '%');
-$req->bindValue(':libelle2', $libelle);
-$req->bindValue(':continent', $numContinent);
-$req->bindValue(':continent2', $numContinent);
+$req = $monPdo->prepare($texteReq);
+// $req->bindValue(':libelle', '%' . $libelle . '%');
+//$req->bindValue(':libelle2', $libelle);
+// $req->bindValue(':continent', $numContinent);
+//$req->bindValue(':continent2', $numContinent);
 $req->setFetchMode(PDO::FETCH_OBJ);
 $req->execute();
 $lesNationalites = $req->fetchAll();
-
+// pour rzemplir la liste des continents dans la liste déroulante
 $reqContinent = $monPdo->prepare("select * from continent ");
 $reqContinent->setFetchMode(PDO::FETCH_OBJ);
+$reqContinent->execute();
 $lesContinents = $reqContinent->fetchAll();
 
 if(!empty($_SESSION['message'])){
@@ -45,12 +53,13 @@ if(!empty($_SESSION['message'])){
     <form action="" method="get" class="border border-primary rounded p-3 ">
          <div class="row">
             <div class="col">
-                <input type="text" class='form-control' id='libelle' placeholder='Saisir le libellé' name='libelle' value="">
+                <input type="text" class='form-control' id='libelle' placeholder='Saisir le libellé' name='libelle' value="<?php echo $libelle; ?>">
             </div>
             <div class="col">
                 <select name="continent" class="form-control">
                    
                     <?php
+                    echo "<option value='Tous'>Tous les continents</option>";
                     foreach($lesContinents as $continent) {
                         $selection = $continent->num == $numContinent ? 'selected' : '';
                         echo "<option value='$continent->num' $selection>$continent->libelle</option>";
