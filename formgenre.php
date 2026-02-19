@@ -8,11 +8,9 @@ if($action == "Modifier"){
     $req->bindParam(':num',$num);
     $req->execute();
     $leGenre=$req->fetch();
+
 }
-$reqContinent=$monPdo->prepare("select * from genre");
-    $reqContinent->setFetchMode(PDO::FETCH_OBJ);
-    $reqContinent->execute();
-    $lesContinents=$reqContinent->fetchAll();
+
 
 ?>
 
@@ -30,7 +28,7 @@ $reqContinent=$monPdo->prepare("select * from genre");
         <input type="hidden" id="num" name="num" value="<?php if($action == "Modifier") echo $leGenre->num; ?>">
         <div class="row">
             <div class="col"><a href="listegenres.php" class='btn btn-warning btn-block'>Revenir à la liste</a></div>
-            <div class="col"><button type='submit' class='btn btn-success btn-block'> <?php echo $action ?></button></div>
+            <div class="col"><button type='submit' class='btn btn-success btn-block'><?php echo $action ?></button></div>
         </div>
 
      

@@ -66,7 +66,7 @@ if(!empty($_SESSION['message'])){
                     echo "<td  class='col-md-5'>$Genre->libelle</td>";
                     echo "<td  class='col-md-2'>
                     <a href='formgenre.php?action=Modifier&num=$Genre->num' class='btn btn-primary'><i class='fas fa-pen'></i></a>
-                     <a href='#modalSuppression' data-toggle='modal' data-message='Voulez-vous vraiment supprimer cette nationalité ?' data-suppression='supprimernationalite.php?num=" . $Genre->num . "' class='btn btn-danger'><i class='fas fa-trash'></i></a>
+                     <a href='#modalSuppression' data-toggle='modal' data-message='Voulez-vous vraiment supprimer cette nationalité ?' data-suppression='supprimergenre.php?num=" . $Genre->num . "' class='btn btn-danger'><i class='fas fa-trash'></i></a>
                         </td>";
                     
                     echo "</tr>";

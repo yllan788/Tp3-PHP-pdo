@@ -11,17 +11,16 @@ $req->bindParam(':num',$num);
 $req->bindParam(':libelle',$libelle);
 
 }else{ 
-    $req=$monPdo->prepare("insert into genre");
+    $req=$monPdo->prepare("insert into genre (libelle) VALUES (:libelle)");
     $req->bindParam(':libelle',$libelle);
-    $req->bindParam(':num',$num);
 }
 $nb=$req->execute();
 $message = $action == "Modifier" ? "modifiée" : "ajoutée";
 
 if($nb == 1) {
-    $_SESSION['message'] = ["success" => "La nationalité a bien été " . $message];
+    $_SESSION['message'] = ["success" => "Le genre a bien été " . $message];
 } else {
-    $_SESSION['message'] = ["danger" => "La nationalité n'a pas été " . $message];
+    $_SESSION['message'] = ["danger" => "La genre n'a pas été " . $message];
 }
 header('Location: listegenres.php');
 exit();
